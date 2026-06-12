@@ -1,0 +1,750 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--purple:#534AB7;--purple-light:#EEEDFE;--purple-mid:#AFA9EC;--teal:#1D9E75;--teal-light:#E1F5EE;--amber:#BA7517;--amber-light:#FAEEDA;--red:#A32D2D;--red-light:#FCEBEB;--green:#3B6D11;--green-light:#EAF3DE;--blue:#185FA5;--blue-light:#E6F1FB;--coral:#993C1D;--coral-light:#FAECE7}
+body{font-family:var(--font-sans);background:var(--color-background-tertiary)}
+.app{display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary);padding:0 18px;display:flex;align-items:center;justify-content:space-between;height:50px;position:sticky;top:0;z-index:100}
+.logo{font-size:15px;font-weight:500;color:var(--color-text-primary);display:flex;align-items:center;gap:7px}
+.logo span{color:var(--purple)}
+.role-switcher{display:flex;gap:5px}
+.rb{padding:4px 11px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:transparent;font-size:11px;cursor:pointer;color:var(--color-text-secondary);transition:all .2s;font-family:var(--font-sans)}
+.rb.active{background:var(--purple);color:#fff;border-color:var(--purple)}
+.topbar-r{display:flex;align-items:center;gap:10px}
+.nb{background:none;border:none;cursor:pointer;color:var(--color-text-secondary);font-size:18px;position:relative}
+.ndot{width:7px;height:7px;background:#E24B4A;border-radius:50%;position:absolute;top:0;right:0;display:none}
+.av{width:30px;height:30px;border-radius:50%;background:var(--purple-light);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:var(--purple);cursor:pointer}
+.layout{display:flex;flex:1}
+.sidebar{width:195px;background:var(--color-background-primary);border-right:0.5px solid var(--color-border-tertiary);padding:14px 0;flex-shrink:0}
+.nl{font-size:10px;color:var(--color-text-tertiary);padding:0 14px 5px;text-transform:uppercase;letter-spacing:.5px;margin-top:8px}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 14px;cursor:pointer;color:var(--color-text-secondary);font-size:13px;border-right:2px solid transparent;transition:all .15s}
+.ni:hover{background:var(--color-background-secondary);color:var(--color-text-primary)}
+.ni.active{background:var(--purple-light);color:var(--purple);border-right-color:var(--purple)}
+.ni i{font-size:16px}
+.main{flex:1;padding:20px;overflow-y:auto;min-height:0}
+.sc{display:none}.sc.active{display:block}
+.ph{margin-bottom:18px;display:flex;align-items:flex-start;justify-content:space-between}
+.pt{font-size:17px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px}
+.ps{font-size:12px;color:var(--color-text-secondary)}
+.cg{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:18px}
+.mc{background:var(--color-background-secondary);border-radius:8px;padding:12px 14px}
+.ml{font-size:11px;color:var(--color-text-secondary);margin-bottom:5px}
+.mv{font-size:21px;font-weight:500;color:var(--color-text-primary)}
+.ms{font-size:11px;color:var(--color-text-secondary);margin-top:1px}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.ct{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:11px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap}
+.bp{background:var(--purple-light);color:var(--purple)}
+.bg{background:var(--green-light);color:var(--green)}
+.ba{background:var(--amber-light);color:var(--amber)}
+.br{background:var(--red-light);color:var(--red)}
+.bb{background:var(--blue-light);color:var(--blue)}
+.bgr{background:#F1EFE8;color:#5F5E5A}
+.bt{background:var(--teal-light);color:var(--teal)}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;border:0.5px solid var(--color-border-secondary);background:transparent;font-size:12px;cursor:pointer;color:var(--color-text-primary);transition:all .15s;font-family:var(--font-sans)}
+.btn:hover{background:var(--color-background-secondary)}
+.btp{background:var(--purple);color:#fff;border-color:var(--purple)}
+.btp:hover{background:#3C3489}
+.bts{padding:4px 10px;font-size:11px}
+.btd{background:var(--red-light);color:var(--red);border-color:#F7C1C1}
+.btt{background:var(--teal-light);color:var(--teal);border-color:#9FE1CB}
+.divider{height:.5px;background:var(--color-border-tertiary);margin:13px 0}
+.pb{height:6px;background:var(--color-background-secondary);border-radius:3px;overflow:hidden;margin:5px 0}
+.pf{height:100%;background:var(--purple);border-radius:3px;transition:width .6s}
+.sr{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.sl{font-size:12px;color:var(--color-text-secondary);width:130px;flex-shrink:0}
+.sbw{flex:1;height:7px;background:var(--color-background-secondary);border-radius:4px;overflow:hidden}
+.sbf{height:100%;border-radius:4px}
+.sn{font-size:12px;font-weight:500;width:28px;text-align:right;flex-shrink:0;color:var(--color-text-primary)}
+.or{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:.5px solid var(--color-border-tertiary)}
+.or:last-child{border-bottom:none}
+.oi h4{font-size:13px;font-weight:500;margin-bottom:2px}
+.oi p{font-size:11px;color:var(--color-text-secondary)}
+.ti2{padding:11px;border:.5px solid var(--color-border-tertiary);border-radius:8px;margin-bottom:8px;cursor:pointer;transition:all .15s}
+.ti2:hover{border-color:var(--purple);background:var(--purple-light)}
+.ti2 h4{font-size:12px;font-weight:500;margin-bottom:3px}
+.ti2 p{font-size:11px;color:var(--color-text-secondary)}
+.tm{display:flex;gap:6px;margin-top:7px;align-items:center;flex-wrap:wrap}
+.aibox{background:var(--purple-light);border:.5px solid var(--purple-mid);border-radius:8px;padding:12px;margin-bottom:12px}
+.aih{display:flex;align-items:center;gap:7px;margin-bottom:9px}
+.aibadge{background:var(--purple);color:#fff;font-size:9px;padding:2px 7px;border-radius:20px}
+.aif{display:flex;align-items:flex-start;gap:7px;margin-bottom:7px;font-size:12px;color:#3C3489}
+.aif i{margin-top:1px;color:var(--purple);flex-shrink:0;font-size:13px}
+.tr2{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:.5px solid var(--color-border-tertiary)}
+.tr2:last-child{border-bottom:none}
+.tav{width:34px;height:34px;border-radius:50%;background:var(--purple-light);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:var(--purple);flex-shrink:0}
+.tinfo{flex:1}
+.tinfo h4{font-size:12px;font-weight:500;margin-bottom:2px}
+.tinfo p{font-size:11px;color:var(--color-text-secondary)}
+.rn{font-size:14px;font-weight:500;color:var(--color-text-secondary);width:22px;flex-shrink:0}
+.r1{color:var(--amber)}.r2{color:#888780}.r3{color:var(--green)}
+.ofbtn{background:var(--teal-light);color:var(--teal);border:.5px solid #9FE1CB;padding:4px 10px;border-radius:8px;font-size:11px;cursor:pointer;font-family:var(--font-sans);display:flex;align-items:center;gap:3px;transition:all .15s;flex-shrink:0}
+.ofbtn:hover{background:#9FE1CB}
+.ofsent{background:var(--green-light);color:var(--green);border-color:#C0DD97;cursor:default}
+.np{position:fixed;top:50px;right:14px;width:300px;background:var(--color-background-primary);border:.5px solid var(--color-border-secondary);border-radius:12px;z-index:150;display:none}
+.np.open{display:block}
+.nph{padding:11px 14px;border-bottom:.5px solid var(--color-border-tertiary);font-weight:500;font-size:13px;display:flex;justify-content:space-between}
+.nit{padding:11px 14px;border-bottom:.5px solid var(--color-border-tertiary);cursor:pointer}
+.nit:last-child{border-bottom:none}
+.nit:hover{background:var(--color-background-secondary)}
+.ntitle{font-size:12px;font-weight:500;margin-bottom:2px}
+.ntime{font-size:10px;color:var(--color-text-secondary)}
+.nunread{background:var(--purple-light)}
+.moverlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center;display:none}
+.moverlay.open{display:flex}
+.modal{background:var(--color-background-primary);border-radius:12px;padding:22px;width:460px;max-width:92vw;border:.5px solid var(--color-border-secondary)}
+.mtitle{font-size:15px;font-weight:500;margin-bottom:3px}
+.msub{font-size:12px;color:var(--color-text-secondary);margin-bottom:14px}
+.fr{margin-bottom:10px}
+.fr label{font-size:11px;color:var(--color-text-secondary);display:block;margin-bottom:3px}
+.fr input,.fr textarea,.fr select{width:100%;padding:7px 11px;border:.5px solid var(--color-border-secondary);border-radius:8px;font-size:12px;background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans)}
+.fr textarea{height:70px;resize:vertical}
+.mact{display:flex;gap:7px;justify-content:flex-end;margin-top:14px}
+.uat{border:1.5px dashed var(--color-border-secondary);border-radius:8px;padding:18px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:10px}
+.uat:hover{border-color:var(--purple);background:var(--purple-light)}
+.uat i{font-size:26px;color:var(--color-text-tertiary);display:block;margin-bottom:5px}
+.uat p{font-size:12px;color:var(--color-text-secondary)}
+.vmock{background:var(--color-background-secondary);border-radius:8px;height:120px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:7px;margin-bottom:10px;border:.5px dashed var(--color-border-secondary)}
+.vmock i{font-size:28px;color:var(--color-text-tertiary)}
+.vmock p{font-size:11px;color:var(--color-text-secondary)}
+.aitk{display:none;align-items:center;gap:7px;color:var(--purple);font-size:12px;padding:9px}
+.aitk.show{display:flex}
+.dw span{display:inline-block;width:5px;height:5px;background:var(--purple);border-radius:50%;animation:wave 1s infinite;margin:0 1px}
+.dw span:nth-child(2){animation-delay:.2s}.dw span:nth-child(3){animation-delay:.4s}
+@keyframes wave{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+.air{display:none;padding:11px;background:var(--purple-light);border-radius:8px;margin-top:9px}
+.air.show{display:block}
+.chip{padding:3px 9px;border-radius:20px;font-size:11px;border:.5px solid var(--color-border-secondary);color:var(--color-text-secondary);display:inline-block}
+.cr{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.tag2{background:var(--color-background-secondary);border-radius:20px;padding:3px 9px;font-size:11px;color:var(--color-text-secondary);display:inline-flex;align-items:center;gap:3px}
+table.dt{width:100%;border-collapse:collapse;font-size:12px}
+table.dt th{text-align:left;padding:7px 10px;color:var(--color-text-secondary);font-weight:400;border-bottom:.5px solid var(--color-border-tertiary)}
+table.dt td{padding:9px 10px;border-bottom:.5px solid var(--color-border-tertiary);color:var(--color-text-primary)}
+table.dt tr:last-child td{border-bottom:none}
+/* NEW: Skill DNA */
+.dna-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.dna-item{padding:10px 12px;border:.5px solid var(--color-border-tertiary);border-radius:8px}
+.dna-skill{font-size:12px;font-weight:500;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+.dna-bar-wrap{height:6px;background:var(--color-background-secondary);border-radius:3px;overflow:hidden;margin-bottom:3px}
+.dna-bar{height:100%;border-radius:3px}
+.dna-proof{font-size:10px;color:var(--color-text-tertiary)}
+/* NEW: Growth Timeline */
+.timeline{position:relative;padding-left:20px}
+.tl-item{position:relative;margin-bottom:14px}
+.tl-item::before{content:'';position:absolute;left:-14px;top:5px;width:8px;height:8px;border-radius:50%;background:var(--purple)}
+.tl-item::after{content:'';position:absolute;left:-11px;top:13px;width:2px;height:calc(100% + 6px);background:var(--color-border-tertiary)}
+.tl-item:last-child::after{display:none}
+.tl-week{font-size:10px;color:var(--color-text-secondary);margin-bottom:2px}
+.tl-score{font-size:13px;font-weight:500}
+.tl-note{font-size:11px;color:var(--color-text-secondary)}
+/* NEW: Badges */
+.badges-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-bottom:12px}
+.badge-card{padding:10px;border:.5px solid var(--color-border-tertiary);border-radius:8px;text-align:center;transition:all .2s}
+.badge-card:hover{border-color:var(--purple);background:var(--purple-light)}
+.badge-icon{font-size:22px;margin-bottom:5px}
+.badge-name{font-size:10px;font-weight:500;color:var(--color-text-primary);margin-bottom:2px}
+.badge-desc{font-size:9px;color:var(--color-text-secondary)}
+.badge-locked{opacity:.4;filter:grayscale(1)}
+/* radar mini */
+.radar-wrap{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.radar-legend{flex:1}
+.radar-legend-item{display:flex;align-items:center;gap:7px;margin-bottom:6px;font-size:11px}
+.radar-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.profile-hdr{display:flex;gap:14px;align-items:flex-start;margin-bottom:16px}
+.pav{width:58px;height:58px;border-radius:50%;background:var(--purple-light);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:500;color:var(--purple);flex-shrink:0}
+.pinfo h2{font-size:16px;font-weight:500;margin-bottom:3px}
+.pinfo p{font-size:12px;color:var(--color-text-secondary);margin-bottom:7px}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:10px}
+.si .sc2{color:var(--color-text-secondary);font-size:10px;margin-bottom:3px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+</style>
+
+<div class="app">
+<div class="topbar">
+  <div class="logo"><i class="ti ti-brand-codesandbox" aria-hidden="true" style="font-size:19px;color:var(--purple)"></i><span>Train</span>IQ <span style="color:var(--color-text-tertiary);font-size:11px;font-weight:400;margin-left:4px">v2</span></div>
+  <div class="role-switcher">
+    <button class="rb active" onclick="switchRole('trainee')">متدرب</button>
+    <button class="rb" onclick="switchRole('admin')">90Soft</button>
+    <button class="rb" onclick="switchRole('observer')">مراقبة</button>
+    <button class="rb" onclick="switchRole('superadmin')">Super Admin</button>
+  </div>
+  <div class="topbar-r">
+    <button class="nb" onclick="toggleNotif()" aria-label="إشعارات"><i class="ti ti-bell"></i><span class="ndot" id="ndot"></span></button>
+    <div class="av" id="uav">أح</div>
+  </div>
+</div>
+
+<div class="layout">
+<div class="sidebar" id="sidebar"></div>
+<div class="main" id="main">
+
+<!-- ===== TRAINEE SCREENS ===== -->
+<div class="sc active" id="sc-t-dash">
+  <div class="ph"><div><div class="pt">أهلاً، أحمد 👋</div><div class="ps">فرصة تطوير الويب · الدفعة 3 · أسبوع 5 من 8</div></div><span class="badge bp"><i class="ti ti-trophy" aria-hidden="true"></i> #3 من 18</span></div>
+  <div class="cg">
+    <div class="mc"><div class="ml">المهام الكلية</div><div class="mv">8</div></div>
+    <div class="mc"><div class="ml">المنجزة</div><div class="mv" style="color:var(--green)">5</div></div>
+    <div class="mc"><div class="ml">المتأخرة</div><div class="mv" style="color:var(--red)">1</div></div>
+    <div class="mc"><div class="ml">متوسط التقييم</div><div class="mv" style="color:var(--purple)">78</div></div>
+  </div>
+  <!-- NEW: Skill DNA preview -->
+  <div class="card" onclick="showSc('t-dna')" style="cursor:pointer;border-color:var(--purple-mid)">
+    <div class="ct">بطاقة الكفاءة الرقمية <span class="badge bp" style="cursor:pointer">عرض كامل ←</span></div>
+    <div class="dna-grid">
+      <div class="dna-item"><div class="dna-skill">React <span style="color:var(--purple);font-size:11px">87</span></div><div class="dna-bar-wrap"><div class="dna-bar" style="width:87%;background:var(--purple)"></div></div><div class="dna-proof">مثبت بـ 3 مهام</div></div>
+      <div class="dna-item"><div class="dna-skill">Node.js <span style="color:var(--teal);font-size:11px">82</span></div><div class="dna-bar-wrap"><div class="dna-bar" style="width:82%;background:var(--teal)"></div></div><div class="dna-proof">مثبت بـ 2 مهام</div></div>
+      <div class="dna-item"><div class="dna-skill">PostgreSQL <span style="color:var(--amber);font-size:11px">74</span></div><div class="dna-bar-wrap"><div class="dna-bar" style="width:74%;background:var(--amber)"></div></div><div class="dna-proof">مثبت بمهمة واحدة</div></div>
+      <div class="dna-item"><div class="dna-skill">Git/DevOps <span style="color:var(--blue);font-size:11px">91</span></div><div class="dna-bar-wrap"><div class="dna-bar" style="width:91%;background:var(--blue)"></div></div><div class="dna-proof">مثبت بـ 4 مهام</div></div>
+    </div>
+  </div>
+  <!-- NEW: Badges preview -->
+  <div class="card">
+    <div class="ct">شاراتي المكتسبة <span class="badge bg">3 من 8</span></div>
+    <div class="badges-grid">
+      <div class="badge-card"><div class="badge-icon">⚡</div><div class="badge-name">مسلّم دائماً</div><div class="badge-desc">5 مهام بالموعد</div></div>
+      <div class="badge-card"><div class="badge-icon">🔥</div><div class="badge-name">كود نظيف</div><div class="badge-desc">90+ جودة كود</div></div>
+      <div class="badge-card"><div class="badge-icon">📈</div><div class="badge-name">متطور سريع</div><div class="badge-desc">+20% خلال شهر</div></div>
+      <div class="badge-card badge-locked"><div class="badge-icon">👑</div><div class="badge-name">متصدر الدفعة</div><div class="badge-desc">المركز الأول</div></div>
+      <div class="badge-card badge-locked"><div class="badge-icon">🎯</div><div class="badge-name">بلا أخطاء</div><div class="badge-desc">مهمة بـ 100/100</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">المهام القادمة</div>
+    <div class="ti2" onclick="showSc('t-submit')"><div style="display:flex;justify-content:space-between"><h4>بناء REST API للمصادقة</h4><span class="badge ba">3 أيام</span></div><p>Coding · متوسط</p></div>
+    <div class="ti2"><div style="display:flex;justify-content:space-between"><h4>تصميم قاعدة بيانات</h4><span class="badge br">متأخرة</span></div><p>Database · صعب</p></div>
+  </div>
+</div>
+
+<!-- Skill DNA Full -->
+<div class="sc" id="sc-t-dna">
+  <div class="ph"><div><div class="pt">بطاقة الكفاءة الرقمية</div><div class="ps">مهاراتك المثبتة فعلياً — وليس مجرد كلام على CV</div></div><button class="btn bts btp"><i class="ti ti-download" aria-hidden="true"></i> تصدير PDF</button></div>
+  <div class="card">
+    <div class="ct">مهاراتك الموثّقة بالأداء الفعلي</div>
+    <div class="dna-grid" style="grid-template-columns:1fr 1fr">
+      <div class="dna-item"><div class="dna-skill">React.js <span style="color:var(--purple)">87/100</span></div><div class="dna-bar-wrap"><div class="dna-bar" style="width:87%;background:var(--purple)"></div></div><div class="dna-proof">مثبت بـ 3 مهام · آخر درجة 90</div></div>
+      <div class="dna-item"><div class="dna-skill">Node.js <span style="color:var(--teal)">82/100</span></div><div class="dna-bar-wrap"><div class="dna-bar" style="width:82%;background:var(--teal)"></div></div><div class="dna-proof">مثبت بـ 2 مهام · آخر درجة 85</div></div>
+      <div class="dna-item"><div class="dna-skill">PostgreSQL <span style="color:var(--amber)">74/100</span></div><div class="dna-bar-wrap"><div class="dna-bar" style="width:74%;background:var(--amber)"></div></div><div class="dna-proof">مثبت بمهمة · آخر درجة 74</div></div>
+      <div class="dna-item"><div class="dna-skill">Git/DevOps <span style="color:var(--blue)">91/100</span></div><div class="dna-bar-wrap"><div class="dna-bar" style="width:91%;background:var(--blue)"></div></div><div class="dna-proof">مثبت بـ 4 مهام · مستقر</div></div>
+      <div class="dna-item"><div class="dna-skill">Python <span style="color:var(--green)">68/100</span></div><div class="dna-bar-wrap"><div class="dna-bar" style="width:68%;background:var(--green)"></div></div><div class="dna-proof">مثبت بمهمة · بحاجة تطوير</div></div>
+      <div class="dna-item"><div class="dna-skill">REST API <span style="color:var(--coral);font-size:11px">80/100</span></div><div class="dna-bar-wrap"><div class="dna-bar" style="width:80%;background:var(--coral)"></div></div><div class="dna-proof">مثبت بـ 2 مهام · جيد</div></div>
+    </div>
+    <div class="divider"></div>
+    <div class="ct" style="margin-bottom:8px">ملف الكفاءات الكاملة</div>
+    <div class="sr"><div class="sl">جودة الكود</div><div class="sbw"><div class="sbf" style="width:87%;background:var(--purple)"></div></div><div class="sn">87</div></div>
+    <div class="sr"><div class="sl">التواصل والعرض</div><div class="sbw"><div class="sbf" style="width:75%;background:var(--teal)"></div></div><div class="sn">75</div></div>
+    <div class="sr"><div class="sl">الالتزام بالمواعيد</div><div class="sbw"><div class="sbf" style="width:92%;background:var(--green)"></div></div><div class="sn">92</div></div>
+    <div class="sr"><div class="sl">التفكير التحليلي</div><div class="sbw"><div class="sbf" style="width:70%;background:var(--amber)"></div></div><div class="sn">70</div></div>
+    <div class="divider"></div>
+    <div style="background:var(--purple-light);border-radius:8px;padding:12px;font-size:12px;color:#3C3489">
+      <i class="ti ti-info-circle" aria-hidden="true"></i> هذه البطاقة مرئية للشركات المراقبة تلقائياً. كل درجة مرتبطة بمهمة حقيقية يمكن مراجعتها.
+    </div>
+  </div>
+</div>
+
+<!-- Growth Timeline -->
+<div class="sc" id="sc-t-growth">
+  <div class="ph"><div><div class="pt">مسار التطور</div><div class="ps">كيف تطورت أسبوعاً بأسبوع</div></div></div>
+  <div class="card">
+    <div class="ct">منحنى التطور · 5 أسابيع</div>
+    <div style="background:var(--color-background-secondary);border-radius:8px;padding:14px;margin-bottom:14px">
+      <svg viewBox="0 0 440 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+        <polyline points="40,90 120,75 200,60 280,45 360,30" fill="none" stroke="#534AB7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="40" cy="90" r="5" fill="#534AB7"/><circle cx="120" cy="75" r="5" fill="#534AB7"/><circle cx="200" cy="60" r="5" fill="#534AB7"/><circle cx="280" cy="45" r="5" fill="#534AB7"/><circle cx="360" cy="30" r="5" fill="#534AB7"/>
+        <text x="40" y="108" font-size="10" fill="#888780" text-anchor="middle">أ1</text><text x="120" y="108" font-size="10" fill="#888780" text-anchor="middle">أ2</text><text x="200" y="108" font-size="10" fill="#888780" text-anchor="middle">أ3</text><text x="280" y="108" font-size="10" fill="#888780" text-anchor="middle">أ4</text><text x="360" y="108" font-size="10" fill="#888780" text-anchor="middle">أ5</text>
+        <text x="40" y="83" font-size="10" fill="#534AB7" text-anchor="middle">62</text><text x="120" y="68" font-size="10" fill="#534AB7" text-anchor="middle">70</text><text x="200" y="53" font-size="10" fill="#534AB7" text-anchor="middle">75</text><text x="280" y="38" font-size="10" fill="#534AB7" text-anchor="middle">80</text><text x="360" y="23" font-size="10" fill="#534AB7" text-anchor="middle">86</text>
+      </svg>
+    </div>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-week">الأسبوع 1</div><div class="tl-score" style="color:var(--red)">62/100</div><div class="tl-note">بداية صعبة — كود غير منظم، تأخر في التسليم</div></div>
+      <div class="tl-item"><div class="tl-week">الأسبوع 2</div><div class="tl-score" style="color:var(--amber)">70/100</div><div class="tl-note">تحسن ملحوظ في التنظيم، الفيديو أوضح</div></div>
+      <div class="tl-item"><div class="tl-week">الأسبوع 3</div><div class="tl-score" style="color:var(--amber)">75/100</div><div class="tl-note">جميع المعايير تحسنت، الالتزام ممتاز</div></div>
+      <div class="tl-item"><div class="tl-week">الأسبوع 4</div><div class="tl-score" style="color:var(--purple)">80/100</div><div class="tl-note">أفضل كود في الدفعة هذا الأسبوع 🏅</div></div>
+      <div class="tl-item"><div class="tl-week">الأسبوع 5</div><div class="tl-score" style="color:var(--green)">86/100</div><div class="tl-note">تطور استثنائي — +24 نقطة من البداية</div></div>
+    </div>
+    <div style="background:var(--green-light);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--green);margin-top:10px">
+      <i class="ti ti-trending-up" aria-hidden="true"></i> معدل نموك: <strong>+24 نقطة خلال 5 أسابيع</strong> — أنت في أعلى 15% من المتدربين تطوراً
+    </div>
+  </div>
+</div>
+
+<!-- Profile -->
+<div class="sc" id="sc-t-profile">
+  <div class="ph"><div><div class="pt">الملف الشخصي</div></div><button class="btn bts btp"><i class="ti ti-edit" aria-hidden="true"></i> تعديل</button></div>
+  <div class="card">
+    <div class="profile-hdr">
+      <div class="pav">أح</div>
+      <div class="pinfo">
+        <h2>أحمد محمد الحسن</h2>
+        <p><i class="ti ti-school" aria-hidden="true"></i> جامعة الملك عبدالله · هندسة حاسوب · 2025</p>
+        <div class="cr"><span class="badge bp">React</span><span class="badge bb">Node.js</span><span class="badge bg">PostgreSQL</span><span class="badge ba">Python</span></div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="sg">
+      <div class="si"><div class="sc2">لغات البرمجة</div><div class="cr"><span class="chip">Python</span><span class="chip">JavaScript</span><span class="chip">Java</span></div></div>
+      <div class="si"><div class="sc2">Frameworks</div><div class="cr"><span class="chip">React</span><span class="chip">Express</span><span class="chip">Django</span></div></div>
+      <div class="si"><div class="sc2">قواعد البيانات</div><div class="cr"><span class="chip">PostgreSQL</span><span class="chip">MongoDB</span></div></div>
+      <div class="si"><div class="sc2">أدوات</div><div class="cr"><span class="chip">Git</span><span class="chip">Docker</span><span class="chip">Figma</span></div></div>
+    </div>
+    <div class="divider"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn bts"><i class="ti ti-file-type-pdf" aria-hidden="true"></i> رفع CV</button>
+      <button class="btn bts btp" onclick="showSc('t-dna')"><i class="ti ti-dna" aria-hidden="true"></i> بطاقة الكفاءة</button>
+      <button class="btn bts" onclick="showSc('t-growth')"><i class="ti ti-trending-up" aria-hidden="true"></i> مسار التطور</button>
+    </div>
+  </div>
+</div>
+
+<!-- Opportunities -->
+<div class="sc" id="sc-t-opps">
+  <div class="ph"><div><div class="pt">فرص التدريب</div></div></div>
+  <div class="card">
+    <div class="or"><div class="oi"><h4>تطوير الويب الكامل (Full Stack)</h4><p><i class="ti ti-users" aria-hidden="true"></i> 18/20 مقعد · 8 أسابيع · React, Node.js</p></div><button class="btn bts btp" onclick="applyOpp(this)">تقديم</button></div>
+    <div class="or"><div class="oi"><h4>تصميم UI/UX</h4><p><i class="ti ti-users" aria-hidden="true"></i> 10/15 مقعد · 6 أسابيع · Figma</p></div><button class="btn bts btp" onclick="applyOpp(this)">تقديم</button></div>
+    <div class="or"><div class="oi"><h4>علم البيانات</h4><p><i class="ti ti-users" aria-hidden="true"></i> 8/12 مقعد · 10 أسابيع · Python, ML</p></div><button class="btn bts btp" onclick="applyOpp(this)">تقديم</button></div>
+  </div>
+</div>
+
+<!-- Tasks -->
+<div class="sc" id="sc-t-tasks">
+  <div class="ph"><div><div class="pt">مهامي</div></div></div>
+  <div class="card">
+    <div class="ti2" onclick="showSc('t-submit')"><div style="display:flex;justify-content:space-between"><h4>بناء REST API للمصادقة</h4><span class="badge ba">Coding</span></div><p>متوسط · التسليم: 18 يوليو</p><div class="tm"><span class="badge bb">لم يُسلَّم</span><button class="btn bts btp" onclick="event.stopPropagation();showSc('t-submit')"><i class="ti ti-upload" aria-hidden="true"></i> تسليم</button></div></div>
+    <div class="ti2"><div style="display:flex;justify-content:space-between"><h4>تصميم قاعدة بيانات</h4><span class="badge br">Database</span></div><p>صعب · متأخرة</p><div class="tm"><span class="badge br">متأخرة</span></div></div>
+    <div class="ti2"><div style="display:flex;justify-content:space-between"><h4>واجهة React Dashboard</h4><span class="badge bp">UI/UX</span></div><p>متوسط · مُسلَّمة</p><div class="tm"><span class="badge bg">مسلّمة · 85/100</span></div></div>
+  </div>
+</div>
+
+<!-- Submit -->
+<div class="sc" id="sc-t-submit">
+  <div class="ph"><div><div class="pt">تسليم المهمة</div><div class="ps">بناء REST API للمصادقة</div></div></div>
+  <div class="card">
+    <div class="ct">رفع ملف الحل</div>
+    <div class="uat" onclick="simUpload(this)"><i class="ti ti-file-zip" aria-hidden="true"></i><p>ZIP · PDF · DOCX · رابط GitHub</p></div>
+    <div class="fr"><label>رابط GitHub</label><input type="text" placeholder="https://github.com/..."></div>
+    <div class="divider"></div>
+    <div class="ct">فيديو الشرح</div>
+    <div class="vmock"><i class="ti ti-video-plus" aria-hidden="true"></i><p>MP4 أو رابط YouTube</p></div>
+    <div class="fr"><label>رابط YouTube</label><input type="text" placeholder="https://youtube.com/..."></div>
+    <div class="divider"></div>
+    <div style="display:flex;gap:7px">
+      <button class="btn btp" onclick="runAI()"><i class="ti ti-robot" aria-hidden="true"></i> فحص ذكي ثم تسليم</button>
+      <button class="btn" onclick="showSc('t-tasks')">إلغاء</button>
+    </div>
+    <div class="aitk" id="aitk"><i class="ti ti-robot" aria-hidden="true" style="font-size:15px"></i> الذكاء الاصطناعي يحلل الكود <div class="dw"><span></span><span></span><span></span></div></div>
+    <div class="air" id="airesult">
+      <div style="font-size:12px;font-weight:500;color:#3C3489;margin-bottom:7px"><i class="ti ti-sparkles" aria-hidden="true"></i> نتيجة الفحص الذكي</div>
+      <div class="aif"><i class="ti ti-check" aria-hidden="true"></i> جودة الكود: 87/100 — منظم وموثق جيداً</div>
+      <div class="aif"><i class="ti ti-check" aria-hidden="true"></i> لا يوجد تشابه مع حلول أخرى (0%)</div>
+      <div class="aif"><i class="ti ti-alert-triangle" aria-hidden="true" style="color:var(--amber)"></i> يُنصح بإضافة Error Handling في /login</div>
+      <button class="btn btp bts" onclick="confirmSub()" style="margin-top:8px"><i class="ti ti-send" aria-hidden="true"></i> تأكيد التسليم</button>
+    </div>
+  </div>
+</div>
+
+<!-- Scores -->
+<div class="sc" id="sc-t-scores">
+  <div class="ph"><div><div class="pt">تقييماتي</div></div></div>
+  <div class="card">
+    <div class="ct">واجهة React Dashboard <span class="badge bg">85/100</span></div>
+    <div class="sr"><div class="sl">جودة الحل (40%)</div><div class="sbw"><div class="sbf" style="width:90%;background:var(--purple)"></div></div><div class="sn">90</div></div>
+    <div class="sr"><div class="sl">جودة الفيديو (20%)</div><div class="sbw"><div class="sbf" style="width:80%;background:var(--teal)"></div></div><div class="sn">80</div></div>
+    <div class="sr"><div class="sl">الالتزام (20%)</div><div class="sbw"><div class="sbf" style="width:100%;background:var(--green)"></div></div><div class="sn">100</div></div>
+    <div class="sr"><div class="sl">التواصل (10%)</div><div class="sbw"><div class="sbf" style="width:70%;background:var(--amber)"></div></div><div class="sn">70</div></div>
+    <div class="sr"><div class="sl">التحليلي (10%)</div><div class="sbw"><div class="sbf" style="width:75%;background:var(--coral)"></div></div><div class="sn">75</div></div>
+    <div class="aibox" style="margin-top:12px">
+      <div class="aih"><i class="ti ti-message-chatbot" aria-hidden="true" style="font-size:15px;color:var(--purple)"></i><span style="font-size:12px;font-weight:500;color:#3C3489">ملاحظات المقيّم</span></div>
+      <div class="aif"><i class="ti ti-star" aria-hidden="true"></i> نقاط القوة: تنظيم المكونات ممتاز، Hooks احترافي</div>
+      <div class="aif"><i class="ti ti-arrow-up-right" aria-hidden="true" style="color:var(--amber)"></i> للتحسين: أضف Unit Tests، حسّن أداء Re-renders</div>
+    </div>
+    <div style="background:var(--green-light);border-radius:8px;padding:9px 12px;font-size:11px;color:var(--green)"><i class="ti ti-award" aria-hidden="true"></i> حصلت على شارة "كود نظيف" بهذه المهمة!</div>
+  </div>
+</div>
+
+<!-- Leaderboard -->
+<div class="sc" id="sc-leaderboard">
+  <div class="ph"><div><div class="pt">المتصدرون</div><div class="ps">الدفعة 3 · تطوير الويب</div></div></div>
+  <div class="card">
+    <div class="tr2"><div class="rn r1">1</div><div class="tav">سم</div><div class="tinfo"><h4>سارة محمد علي</h4><p>معدل 94 · 8/8 مهام · <span style="color:var(--amber)">⚡🔥📈</span></p></div><span class="badge ba"><i class="ti ti-trophy" aria-hidden="true"></i> متصدرة</span></div>
+    <div class="tr2"><div class="rn r2">2</div><div class="tav" style="background:var(--teal-light);color:var(--teal)">كج</div><div class="tinfo"><h4>خالد جاسم</h4><p>معدل 88 · 8/8 مهام · <span>⚡📈</span></p></div><span class="badge bg">ممتاز</span></div>
+    <div class="tr2" style="background:var(--purple-light);border-radius:8px"><div class="rn r3">3</div><div class="tav">أح</div><div class="tinfo"><h4>أحمد (أنت)</h4><p>معدل 78 · 5/8 مهام · <span>⚡🔥</span></p></div><span class="badge bp">جيد</span></div>
+    <div class="tr2"><div class="rn" style="color:var(--color-text-secondary)">4</div><div class="tav" style="background:var(--amber-light);color:var(--amber)">رع</div><div class="tinfo"><h4>رنا عبدالله</h4><p>معدل 72 · 6/8 مهام</p></div><span class="badge bgr">متوسط</span></div>
+    <div class="tr2"><div class="rn" style="color:var(--color-text-secondary)">5</div><div class="tav" style="background:var(--coral-light);color:var(--coral)">فر</div><div class="tinfo"><h4>فيصل الرشيد</h4><p>معدل 68 · 5/8 مهام</p></div><span class="badge bgr">متوسط</span></div>
+  </div>
+</div>
+
+<!-- ===== ADMIN SCREENS ===== -->
+<div class="sc" id="sc-a-dash">
+  <div class="ph"><div><div class="pt">لوحة 90Soft</div><div class="ps">إدارة التدريب والتقييم</div></div></div>
+  <div class="cg">
+    <div class="mc"><div class="ml">متدربون نشطون</div><div class="mv">42</div></div>
+    <div class="mc"><div class="ml">تسليمات اليوم</div><div class="mv">17</div></div>
+    <div class="mc"><div class="ml">بانتظار التقييم</div><div class="mv" style="color:var(--red)">8</div></div>
+    <div class="mc"><div class="ml">متوسط الأداء</div><div class="mv" style="color:var(--purple)">76</div></div>
+  </div>
+  <div class="two-col">
+    <div class="card" onclick="showSc('a-eval')" style="cursor:pointer">
+      <div class="ct">تقييمات معلقة <span class="badge br">8</span></div>
+      <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:9px">AI يجهّز التقارير المبدئية</div>
+      <button class="btn btp bts"><i class="ti ti-pencil-check" aria-hidden="true"></i> بدء التقييم</button>
+    </div>
+    <div class="card" onclick="showSc('a-tasks')" style="cursor:pointer">
+      <div class="ct">إدارة المهام</div>
+      <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:9px">نشر · جدولة · أرشفة</div>
+      <button class="btn bts"><i class="ti ti-list-check" aria-hidden="true"></i> إدارة</button>
+    </div>
+  </div>
+  <!-- NEW: Growth alerts for admin -->
+  <div class="card">
+    <div class="ct">تنبيهات التطور <span class="badge bp">جديد</span></div>
+    <div style="display:flex;align-items:center;gap:10px;padding:9px;background:var(--green-light);border-radius:8px;margin-bottom:8px">
+      <i class="ti ti-trending-up" aria-hidden="true" style="font-size:18px;color:var(--green)"></i>
+      <div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--green)">أحمد محمد — تطور +24 نقطة</div><div style="font-size:11px;color:var(--teal)">من 62 إلى 86 خلال 5 أسابيع — موهبة تستحق الانتباه</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;padding:9px;background:var(--red-light);border-radius:8px">
+      <i class="ti ti-trending-down" aria-hidden="true" style="font-size:18px;color:var(--red)"></i>
+      <div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--red)">فيصل الرشيد — تراجع -8 نقاط</div><div style="font-size:11px;color:var(--red)">يحتاج متابعة مباشرة</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Evaluate -->
+<div class="sc" id="sc-a-eval">
+  <div class="ph"><div><div class="pt">تقييم المتدربين</div><div class="ps">REST API للمصادقة · أحمد محمد</div></div></div>
+  <div class="card">
+    <div class="ct">الحل المرفوع</div>
+    <div style="display:flex;gap:8px;margin-bottom:11px;flex-wrap:wrap">
+      <span class="tag2"><i class="ti ti-brand-github" aria-hidden="true"></i> github.com/ahmed/auth-api</span>
+      <span class="tag2"><i class="ti ti-video" aria-hidden="true"></i> شرح 12 دقيقة</span>
+      <span class="tag2"><i class="ti ti-calendar-check" aria-hidden="true"></i> مسلّم في الموعد</span>
+    </div>
+    <div class="aibox">
+      <div class="aih"><i class="ti ti-robot" aria-hidden="true" style="font-size:15px;color:var(--purple)"></i><span style="font-size:12px;font-weight:500;color:#3C3489">تقرير الـ AI المبدئي</span><span class="aibadge">AI</span></div>
+      <div class="aif"><i class="ti ti-check" aria-hidden="true"></i> جودة الكود: 88/100 — تنظيم جيد</div>
+      <div class="aif"><i class="ti ti-check" aria-hidden="true"></i> لا انتحال — 0% تشابه</div>
+      <div class="aif"><i class="ti ti-check" aria-hidden="true"></i> تحليل الفيديو: نبرة واضحة، مصطلحات صحيحة</div>
+      <div class="aif"><i class="ti ti-alert-triangle" aria-hidden="true" style="color:var(--amber)"></i> Error handling ناقص في نقطتين</div>
+      <div style="margin-top:7px;font-size:11px;color:var(--purple)">الدرجة المقترحة: <strong>82/100</strong></div>
+    </div>
+    <div class="ct" style="margin-bottom:8px">تقييم المقيّم</div>
+    <div id="sinputs">
+      <div class="sr"><div class="sl">جودة الحل (40%)</div><input type="range" min="0" max="100" value="85" oninput="updScore()" style="flex:1"><div class="sn" id="s1">85</div></div>
+      <div class="sr"><div class="sl">جودة الفيديو (20%)</div><input type="range" min="0" max="100" value="80" oninput="updScore()" style="flex:1"><div class="sn" id="s2">80</div></div>
+      <div class="sr"><div class="sl">الالتزام (20%)</div><input type="range" min="0" max="100" value="100" oninput="updScore()" style="flex:1"><div class="sn" id="s3">100</div></div>
+      <div class="sr"><div class="sl">التواصل (10%)</div><input type="range" min="0" max="100" value="75" oninput="updScore()" style="flex:1"><div class="sn" id="s4">75</div></div>
+      <div class="sr"><div class="sl">التحليلي (10%)</div><input type="range" min="0" max="100" value="70" oninput="updScore()" style="flex:1"><div class="sn" id="s5">70</div></div>
+    </div>
+    <div class="mc" style="margin:11px 0;background:var(--purple-light)"><div class="ml">النتيجة النهائية</div><div class="mv" id="fscore" style="color:var(--purple)">86</div></div>
+    <div class="fr"><label>ملاحظات</label><textarea placeholder="نقاط القوة، الضعف، الاقتراحات..."></textarea></div>
+    <button class="btn btp" onclick="confEval(this)"><i class="ti ti-check" aria-hidden="true"></i> اعتماد التقييم</button>
+  </div>
+</div>
+
+<!-- Admin Tasks -->
+<div class="sc" id="sc-a-tasks">
+  <div class="ph"><div><div class="pt">إدارة المهام</div></div><button class="btn bts btp" onclick="openModal()"><i class="ti ti-plus" aria-hidden="true"></i> مهمة جديدة</button></div>
+  <div class="card">
+    <table class="dt">
+      <thead><tr><th>المهمة</th><th>النوع</th><th>التسليمات</th><th>الحالة</th><th></th></tr></thead>
+      <tbody>
+        <tr><td>بناء REST API</td><td><span class="badge bp">Coding</span></td><td>8/18</td><td><span class="badge bg">منشورة</span></td><td><button class="btn bts"><i class="ti ti-edit" aria-hidden="true"></i></button></td></tr>
+        <tr><td>تصميم قاعدة بيانات</td><td><span class="badge bb">Doc</span></td><td>14/18</td><td><span class="badge ba">منتهية</span></td><td><button class="btn bts"><i class="ti ti-edit" aria-hidden="true"></i></button></td></tr>
+        <tr><td>React Dashboard</td><td><span class="badge ba">UI/UX</span></td><td>18/18</td><td><span class="badge bgr">مؤرشفة</span></td><td><button class="btn bts"><i class="ti ti-edit" aria-hidden="true"></i></button></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== OBSERVER SCREENS ===== -->
+<div class="sc" id="sc-o-dash">
+  <div class="ph"><div><div class="pt">استقطاب المواهب</div><div class="ps">TechVentures · Browse &amp; Hire</div></div></div>
+  <div class="cg">
+    <div class="mc"><div class="ml">متدربون متاحون</div><div class="mv">42</div></div>
+    <div class="mc"><div class="ml">عروض أُرسلت</div><div class="mv" style="color:var(--teal)" id="offerCount">3</div></div>
+    <div class="mc"><div class="ml">متصدرون</div><div class="mv" style="color:var(--amber)">5</div></div>
+  </div>
+  <div class="card">
+    <div class="ct">فلترة المتدربين
+      <div style="display:flex;gap:6px">
+        <select style="font-size:11px;padding:4px 7px"><option>كل التخصصات</option><option>هندسة حاسوب</option><option>تقنية معلومات</option></select>
+        <select style="font-size:11px;padding:4px 7px"><option>كل المهارات</option><option>React</option><option>Python</option></select>
+      </div>
+    </div>
+    <div class="tr2"><div class="rn r1">1</div><div class="tav">سم</div>
+      <div class="tinfo"><h4>سارة محمد علي</h4>
+        <p>هندسة حاسوب · React 94, Git 97 · معدل 94</p>
+        <!-- NEW: Badges visible to observer -->
+        <div style="margin-top:3px"><span style="font-size:11px">⚡🔥📈</span> <span style="font-size:10px;color:var(--color-text-tertiary)">3 شارات مكتسبة</span></div>
+        <!-- NEW: Growth indicator -->
+        <div style="font-size:10px;color:var(--green);margin-top:2px"><i class="ti ti-trending-up" aria-hidden="true"></i> +18 نقطة خلال الشهر</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end">
+        <button class="ofbtn" id="of1" onclick="sendOffer('of1','سارة')"><i class="ti ti-send" aria-hidden="true"></i> إرسال عرض</button>
+        <button class="btn bts" onclick="showSc('o-profile')"><i class="ti ti-eye" aria-hidden="true"></i> بروفايل</button>
+      </div>
+    </div>
+    <div class="tr2"><div class="rn r2">2</div><div class="tav" style="background:var(--teal-light);color:var(--teal)">كج</div>
+      <div class="tinfo"><h4>خالد جاسم</h4>
+        <p>تقنية معلومات · Django 88, Docker 85 · معدل 88</p>
+        <div style="margin-top:3px"><span style="font-size:11px">⚡📈</span></div>
+        <div style="font-size:10px;color:var(--green);margin-top:2px"><i class="ti ti-trending-up" aria-hidden="true"></i> +12 نقطة خلال الشهر</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end">
+        <button class="ofbtn" id="of2" onclick="sendOffer('of2','خالد')"><i class="ti ti-send" aria-hidden="true"></i> إرسال عرض</button>
+        <button class="btn bts" onclick="showSc('o-profile')"><i class="ti ti-eye" aria-hidden="true"></i> بروفايل</button>
+      </div>
+    </div>
+    <div class="tr2"><div class="rn r3">3</div><div class="tav">أح</div>
+      <div class="tinfo"><h4>أحمد محمد</h4>
+        <p>هندسة حاسوب · React 87, Git 91 · معدل 78</p>
+        <div style="margin-top:3px"><span style="font-size:11px">⚡🔥</span></div>
+        <div style="font-size:10px;color:var(--green);margin-top:2px"><i class="ti ti-trending-up" aria-hidden="true"></i> +24 نقطة — أعلى نمو في الدفعة</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end">
+        <button class="ofbtn" id="of3" onclick="sendOffer('of3','أحمد')"><i class="ti ti-send" aria-hidden="true"></i> إرسال عرض</button>
+        <button class="btn bts" onclick="showSc('o-profile')"><i class="ti ti-eye" aria-hidden="true"></i> بروفايل</button>
+      </div>
+    </div>
+    <div class="tr2"><div class="rn" style="color:var(--color-text-secondary)">4</div><div class="tav" style="background:var(--amber-light);color:var(--amber)">رع</div>
+      <div class="tinfo"><h4>رنا عبدالله</h4>
+        <p>علم بيانات · Python 82, ML 75 · معدل 72</p>
+        <div style="font-size:10px;color:var(--color-text-tertiary);margin-top:2px">→ مستقر</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end">
+        <button class="ofbtn" id="of4" onclick="sendOffer('of4','رنا')"><i class="ti ti-send" aria-hidden="true"></i> إرسال عرض</button>
+        <button class="btn bts" onclick="showSc('o-profile')"><i class="ti ti-eye" aria-hidden="true"></i> بروفايل</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Observer: Trainee Full Profile -->
+<div class="sc" id="sc-o-profile">
+  <div class="ph"><div><div class="pt">بروفايل المتدرب</div><div class="ps">عرض شامل — كما تراه شركة المراقبة</div></div><button class="btn bts btp" onclick="sendOffer('of3','أحمد');showSc('o-dash')"><i class="ti ti-send" aria-hidden="true"></i> إرسال عرض مقابلة</button></div>
+  <div class="card">
+    <div class="profile-hdr">
+      <div class="pav">أح</div>
+      <div class="pinfo">
+        <h2>أحمد محمد الحسن</h2>
+        <p>هندسة حاسوب · جامعة الملك عبدالله · معدل تراكمي 78</p>
+        <div style="font-size:11px;color:var(--green);margin-bottom:6px"><i class="ti ti-trending-up" aria-hidden="true"></i> أعلى نمو في الدفعة (+24 نقطة)</div>
+        <div class="cr"><span style="font-size:11px">⚡</span><span style="font-size:11px">🔥</span><span style="font-size:9px;color:var(--color-text-secondary)">شارتان مكتسبتان</span></div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="ct" style="margin-bottom:8px">بطاقة الكفاءة الرقمية</div>
+    <div class="dna-grid">
+      <div class="dna-item"><div class="dna-skill">React <span style="color:var(--purple)">87</span></div><div class="dna-bar-wrap"><div class="dna-bar" style="width:87%;background:var(--purple)"></div></div><div class="dna-proof">3 مهام موثّقة</div></div>
+      <div class="dna-item"><div class="dna-skill">Git/DevOps <span style="color:var(--blue)">91</span></div><div class="dna-bar-wrap"><div class="dna-bar" style="width:91%;background:var(--blue)"></div></div><div class="dna-proof">4 مهام موثّقة</div></div>
+      <div class="dna-item"><div class="dna-skill">Node.js <span style="color:var(--teal)">82</span></div><div class="dna-bar-wrap"><div class="dna-bar" style="width:82%;background:var(--teal)"></div></div><div class="dna-proof">2 مهمتان</div></div>
+      <div class="dna-item"><div class="dna-skill">PostgreSQL <span style="color:var(--amber)">74</span></div><div class="dna-bar-wrap"><div class="dna-bar" style="width:74%;background:var(--amber)"></div></div><div class="dna-proof">مهمة واحدة</div></div>
+    </div>
+    <div class="divider"></div>
+    <div class="ct" style="margin-bottom:8px">منحنى التطور</div>
+    <svg viewBox="0 0 380 80" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;margin-bottom:6px">
+      <polyline points="30,65 110,52 190,42 270,30 350,15" fill="none" stroke="#534AB7" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="30" cy="65" r="4" fill="#534AB7"/><circle cx="110" cy="52" r="4" fill="#534AB7"/><circle cx="190" cy="42" r="4" fill="#534AB7"/><circle cx="270" cy="30" r="4" fill="#534AB7"/><circle cx="350" cy="15" r="4" fill="#534AB7"/>
+      <text x="30" y="76" font-size="9" fill="#888780" text-anchor="middle">62</text><text x="110" y="76" font-size="9" fill="#888780" text-anchor="middle">70</text><text x="190" y="76" font-size="9" fill="#888780" text-anchor="middle">75</text><text x="270" y="76" font-size="9" fill="#888780" text-anchor="middle">80</text><text x="350" y="76" font-size="9" fill="#534AB7" font-weight="500" text-anchor="middle">86</text>
+    </svg>
+    <div style="font-size:11px;color:var(--green);margin-bottom:10px"><i class="ti ti-trending-up" aria-hidden="true"></i> نمو +24 نقطة — في أعلى 15% من المتدربين تطوراً</div>
+    <div class="divider"></div>
+    <div style="font-size:11px;color:var(--color-text-secondary);background:var(--teal-light);padding:9px 12px;border-radius:8px;color:var(--teal)">
+      <i class="ti ti-info-circle" aria-hidden="true"></i> هذا الملف مدعوم بأداء حقيقي موثّق — ليس مجرد CV. كل مهارة مرتبطة بمهمة يمكن مراجعتها.
+    </div>
+  </div>
+</div>
+
+<!-- ===== SUPER ADMIN ===== -->
+<div class="sc" id="sc-sa-dash">
+  <div class="ph"><div><div class="pt">Super Admin</div></div></div>
+  <div class="cg">
+    <div class="mc"><div class="ml">الشركات</div><div class="mv">6</div></div>
+    <div class="mc"><div class="ml">المتدربون</div><div class="mv">134</div></div>
+    <div class="mc"><div class="ml">الفرص النشطة</div><div class="mv">8</div></div>
+    <div class="mc"><div class="ml">شارات مُمنوحة</div><div class="mv" style="color:var(--amber)">89</div></div>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="ct">الشركات</div>
+      <div class="or"><div class="oi"><h4>90Soft (Admin)</h4><p>42 متدرب نشط</p></div><span class="badge bg">نشطة</span></div>
+      <div class="or"><div class="oi"><h4>TechVentures</h4><p>مراقبة · 3 عروض</p></div><span class="badge bb">مراقبة</span></div>
+      <div class="or"><div class="oi"><h4>DataCorp</h4><p>مراقبة · 1 عرض</p></div><span class="badge bb">مراقبة</span></div>
+      <button class="btn bts btp" style="margin-top:8px"><i class="ti ti-plus" aria-hidden="true"></i> إضافة شركة</button>
+    </div>
+    <div class="card">
+      <div class="ct">أوزان التقييم</div>
+      <div class="sr"><div class="sl">جودة الحل</div><input type="range" min="0" max="100" value="40" style="flex:1"><div class="sn">40%</div></div>
+      <div class="sr"><div class="sl">الفيديو</div><input type="range" min="0" max="100" value="20" style="flex:1"><div class="sn">20%</div></div>
+      <div class="sr"><div class="sl">الالتزام</div><input type="range" min="0" max="100" value="20" style="flex:1"><div class="sn">20%</div></div>
+      <button class="btn bts btp" style="margin-top:8px">حفظ الإعدادات</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">إعدادات الشارات</div>
+    <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:10px">تحكم بمعايير منح كل شارة</div>
+    <div class="badges-grid">
+      <div class="badge-card"><div class="badge-icon">⚡</div><div class="badge-name">مسلّم دائماً</div><div class="badge-desc">5 مهام بالموعد</div></div>
+      <div class="badge-card"><div class="badge-icon">🔥</div><div class="badge-name">كود نظيف</div><div class="badge-desc">90+ جودة</div></div>
+      <div class="badge-card"><div class="badge-icon">📈</div><div class="badge-name">متطور سريع</div><div class="badge-desc">+20% شهرياً</div></div>
+      <div class="badge-card"><div class="badge-icon">👑</div><div class="badge-name">متصدر</div><div class="badge-desc">المركز الأول</div></div>
+      <div class="badge-card"><div class="badge-icon">🎯</div><div class="badge-name">بلا أخطاء</div><div class="badge-desc">100/100</div></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /layout -->
+</div><!-- /app -->
+
+<!-- Notif Panel -->
+<div class="np" id="np">
+  <div class="nph">الإشعارات <button style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--color-text-secondary)" onclick="toggleNotif()">إغلاق</button></div>
+  <div class="nit nunread" id="notif-offer" style="display:none">
+    <div class="ntitle"><i class="ti ti-building" aria-hidden="true"></i> عرض مقابلة جديد من TechVentures!</div>
+    <div style="font-size:11px;color:var(--color-text-secondary);margin:3px 0">تهانينا! شركة تقنية ترى في أدائك الحقيقي موهبة تستحق التوظيف.</div>
+    <div class="ntime">الآن</div>
+  </div>
+  <div class="nit nunread"><div class="ntitle">🔥 حصلت على شارة "كود نظيف"!</div><div class="ntime">منذ ساعة</div></div>
+  <div class="nit nunread"><div class="ntitle">تقييم جديد — React Dashboard: 85/100</div><div class="ntime">منذ ساعتين</div></div>
+  <div class="nit"><div class="ntitle">اقتراب موعد REST API (3 أيام)</div><div class="ntime">منذ 3 ساعات</div></div>
+  <div class="nit"><div class="ntitle">مهمة جديدة نُشرت: توثيق المتجر</div><div class="ntime">أمس</div></div>
+</div>
+
+<!-- Task Modal -->
+<div class="moverlay" id="modal">
+  <div class="modal">
+    <div class="mtitle">إنشاء مهمة جديدة</div>
+    <div class="msub">داخل فرصة تطوير الويب الكامل</div>
+    <div class="fr"><label>عنوان المهمة</label><input type="text" placeholder="مثال: بناء نظام تسجيل دخول آمن"></div>
+    <div class="fr"><label>نوع المهمة</label><select><option>Coding Task</option><option>UI/UX Task</option><option>Documentation Task</option><option>Research Task</option></select></div>
+    <div class="fr"><label>الصعوبة</label><select><option>سهل</option><option>متوسط</option><option>صعب</option></select></div>
+    <div class="fr"><label>جدولة النشر</label><select><option>نشر فوري</option><option>نشر أسبوعي</option><option>تاريخ محدد</option></select></div>
+    <div class="fr"><label>وصف المهمة</label><textarea placeholder="اشرح المطلوب..."></textarea></div>
+    <div class="mact"><button class="btn" onclick="closeModal()">إلغاء</button><button class="btn btp" onclick="closeModal()"><i class="ti ti-check" aria-hidden="true"></i> نشر المهمة</button></div>
+  </div>
+</div>
+
+<script>
+const roles = {
+  trainee:{av:'أح',defaultSc:'t-dash',nav:`
+    <div class="nl">المتدرب</div>
+    <div class="ni" onclick="showSc('t-dash')"><i class="ti ti-dashboard" aria-hidden="true"></i> لوحة تحكم</div>
+    <div class="ni" onclick="showSc('t-profile')"><i class="ti ti-user-circle" aria-hidden="true"></i> ملفي الشخصي</div>
+    <div class="ni" onclick="showSc('t-dna')"><i class="ti ti-dna" aria-hidden="true"></i> بطاقة الكفاءة</div>
+    <div class="ni" onclick="showSc('t-growth')"><i class="ti ti-trending-up" aria-hidden="true"></i> مسار التطور</div>
+    <div class="ni" onclick="showSc('t-opps')"><i class="ti ti-briefcase" aria-hidden="true"></i> الفرص</div>
+    <div class="ni" onclick="showSc('t-tasks')"><i class="ti ti-checklist" aria-hidden="true"></i> مهامي</div>
+    <div class="ni" onclick="showSc('t-submit')"><i class="ti ti-upload" aria-hidden="true"></i> تسليم مهمة</div>
+    <div class="ni" onclick="showSc('t-scores')"><i class="ti ti-chart-bar" aria-hidden="true"></i> تقييماتي</div>
+    <div class="ni" onclick="showSc('leaderboard')"><i class="ti ti-trophy" aria-hidden="true"></i> المتصدرون</div>`
+  },
+  admin:{av:'9S',defaultSc:'a-dash',nav:`
+    <div class="nl">90Soft Admin</div>
+    <div class="ni" onclick="showSc('a-dash')"><i class="ti ti-dashboard" aria-hidden="true"></i> لوحة التحكم</div>
+    <div class="ni" onclick="showSc('a-eval')"><i class="ti ti-pencil-check" aria-hidden="true"></i> تقييم الطلاب</div>
+    <div class="ni" onclick="showSc('a-tasks')"><i class="ti ti-list-check" aria-hidden="true"></i> إدارة المهام</div>
+    <div class="ni" onclick="showSc('leaderboard')"><i class="ti ti-trophy" aria-hidden="true"></i> المتصدرون</div>`
+  },
+  observer:{av:'TV',defaultSc:'o-dash',nav:`
+    <div class="nl">شركة مراقبة</div>
+    <div class="ni" onclick="showSc('o-dash')"><i class="ti ti-users" aria-hidden="true"></i> استقطاب المواهب</div>
+    <div class="ni" onclick="showSc('o-profile')"><i class="ti ti-user-circle" aria-hidden="true"></i> بروفايل متدرب</div>
+    <div class="ni" onclick="showSc('leaderboard')"><i class="ti ti-chart-bar" aria-hidden="true"></i> تقييمات المتدربين</div>`
+  },
+  superadmin:{av:'SA',defaultSc:'sa-dash',nav:`
+    <div class="nl">Super Admin</div>
+    <div class="ni" onclick="showSc('sa-dash')"><i class="ti ti-settings" aria-hidden="true"></i> لوحة الإدارة</div>
+    <div class="ni" onclick="showSc('leaderboard')"><i class="ti ti-trophy" aria-hidden="true"></i> التقارير</div>`
+  }
+};
+
+function showSc(id){
+  document.querySelectorAll('.sc').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById('sc-'+id);
+  if(el) el.classList.add('active');
+  document.querySelectorAll('.ni').forEach(n=>{
+    n.classList.remove('active');
+    if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes(id)) n.classList.add('active');
+  });
+}
+
+function switchRole(role){
+  document.querySelectorAll('.rb').forEach(b=>b.classList.remove('active'));
+  const map={trainee:0,admin:1,observer:2,superadmin:3};
+  document.querySelectorAll('.rb')[map[role]].classList.add('active');
+  document.getElementById('sidebar').innerHTML=roles[role].nav;
+  document.getElementById('uav').textContent=roles[role].av;
+  showSc(roles[role].defaultSc);
+}
+
+function applyOpp(btn){
+  if(btn.textContent.trim()==='تقديم'){
+    btn.textContent='تم التقديم ✓';
+    btn.style.cssText='background:var(--green-light);color:var(--green);border-color:#C0DD97';
+  } else {
+    btn.textContent='تقديم';
+    btn.style.cssText='';
+    btn.classList.add('btp');
+  }
+}
+
+function simUpload(el){
+  el.innerHTML='<i class="ti ti-file-check" aria-hidden="true" style="font-size:24px;color:var(--green);display:block;margin-bottom:4px"></i><p style="color:var(--green)">auth-api.zip · رُفع بنجاح</p>';
+  el.style.cssText='border-color:#C0DD97;background:var(--green-light)';
+}
+
+function runAI(){
+  const tk=document.getElementById('aitk'),r=document.getElementById('airesult');
+  tk.classList.add('show');r.classList.remove('show');
+  setTimeout(()=>{tk.classList.remove('show');r.classList.add('show');},2200);
+}
+
+function confirmSub(){
+  document.getElementById('airesult').innerHTML='<div style="display:flex;align-items:center;gap:7px;color:var(--green);font-size:13px;font-weight:500"><i class="ti ti-circle-check" aria-hidden="true" style="font-size:18px"></i> تم التسليم بنجاح! سيتم إشعارك عند اكتمال التقييم.</div>';
+}
+
+function updScore(){
+  const ins=document.querySelectorAll('#sinputs input[type=range]');
+  const w=[.4,.2,.2,.1,.1],ids=['s1','s2','s3','s4','s5'];
+  let t=0;
+  ins.forEach((inp,i)=>{const v=parseInt(inp.value);document.getElementById(ids[i]).textContent=v;t+=v*w[i];});
+  document.getElementById('fscore').textContent=Math.round(t);
+}
+
+function confEval(btn){
+  btn.textContent='✓ تم الاعتماد وإرسال الإشعار';
+  btn.disabled=true;
+}
+
+let nOpen=false;
+function toggleNotif(){
+  nOpen=!nOpen;
+  document.getElementById('np').classList.toggle('open',nOpen);
+}
+
+let offersSent=0;
+function sendOffer(id,name){
+  const btn=document.getElementById(id);
+  if(btn&&!btn.classList.contains('ofsent')){
+    btn.innerHTML='<i class="ti ti-check" aria-hidden="true"></i> عرض أُرسل';
+    btn.classList.add('ofsent');
+    btn.disabled=true;
+    offersSent++;
+    const oc=document.getElementById('offerCount');
+    if(oc) oc.textContent=offersSent+3;
+    document.getElementById('notif-offer').style.display='block';
+    document.getElementById('ndot').style.display='block';
+  }
+}
+
+function openModal(){document.getElementById('modal').classList.add('open');}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+
+document.addEventListener('click',e=>{
+  if(nOpen&&!e.target.closest('#np')&&!e.target.closest('.nb')){
+    nOpen=false;document.getElementById('np').classList.remove('open');
+  }
+});
+
+switchRole('trainee');
+</script>
